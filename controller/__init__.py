@@ -28,6 +28,21 @@ class label:
 
         return detail
 
+    def create(title, description):
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO labels (title, description)"
+            "VALUES (%s, %s) RETURNING id, title, description",
+            (title, description),
+        )
+        label = cursor.fetchone()
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return label
+
 
 class case:
     def get_all():
