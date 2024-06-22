@@ -1,6 +1,6 @@
 from flask import Flask, request
 from db import init_db
-from model import train_knn
+from model import train_knn, predict_case
 from controller import label as label_controller
 
 app = Flask(__name__)
@@ -27,6 +27,26 @@ def train():
             return "KNN model created successfully"
         except:
             return "Model training failed"
+
+
+@app.route("/model/predict", methods=["POST"])
+def predict():
+    if request.method == "POST":
+        request_body = request.get_json()
+        text = request_body.get("text")
+
+        if not text:
+            return "Field 'text' is required", 400
+
+        label, description, probability = predict_case(text)
+        return {
+            "text": text,
+            "prediction": {
+                "label": label,
+                "description": description,
+                "probability": probability,
+            },
+        }
 
 
 @app.route("/labels", methods=["GET", "POST"])
