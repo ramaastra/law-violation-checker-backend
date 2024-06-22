@@ -3,6 +3,7 @@ from flask_cors import CORS
 from db import init_db
 from model import train_knn, predict_case
 from controller import label as label_controller
+from controller import case as case_controller
 
 app = Flask(__name__)
 CORS(app)
@@ -66,6 +67,13 @@ def handle_request():
 
         id, title, description = label_controller.create(title, description)
         return {"id": id, "title": title, "description": description}
+
+
+@app.route("/cases")
+def handle_request():
+    if request.method == "GET":
+        cases = case_controller.get_all()
+        return cases
 
 
 if __name__ == "__main__":
