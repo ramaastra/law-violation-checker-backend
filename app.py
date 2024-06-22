@@ -1,9 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, Response
+from flask_cors import CORS
 from db import init_db
 from model import train_knn, predict_case
 from controller import label as label_controller
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/")
