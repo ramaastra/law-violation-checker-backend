@@ -7,6 +7,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 from controller import label as label_controller
+from controller import case as case_controller
 
 
 def preprocess_data(text):
@@ -22,9 +23,10 @@ def preprocess_data(text):
     return clean_text.strip()
 
 
-def train_knn(data):
-    texts = data.get("text")
-    labels = data.get("label")
+def train_knn():
+    cases = case_controller.get_all()
+    texts = [case.get("text") for case in cases]
+    labels = [case.get("label") for case in cases]
 
     tfidf_vectorizer = TfidfVectorizer()
     tdm = tfidf_vectorizer.fit_transform(texts)
