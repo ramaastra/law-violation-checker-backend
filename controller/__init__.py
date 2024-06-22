@@ -55,3 +55,26 @@ class case:
 
         labels = format_tuples(("id", "text", "label", "created_at"), data)
         return labels
+
+    def create(text, label):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM labels WHERE id=%s;", [label])
+        is_label_exist = cursor.fetchone()
+
+        if not is_label_exist:
+            return False
+
+        cursor.execute(
+            "INSERT INTO cases (text, label)"
+            "VALUES (%s, %s) RETURNING id, text, label, created_at",
+            (text, label),
+        )
+        case = cursor.fetchone()
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return case

@@ -69,11 +69,25 @@ def handle_request():
         return {"id": id, "title": title, "description": description}
 
 
-@app.route("/cases")
-def handle_request():
+@app.route("/cases", methods=["GET", "POST"])
+def handle_cases_request():
     if request.method == "GET":
         cases = case_controller.get_all()
         return cases
+    elif request.method == "POST":
+        request_body = request.get_json()
+        text = request_body.get("text")
+        label = request_body.get("label")
+
+        if not text or not label:
+            return "Field 'text' and 'label' are required", 400
+
+        case = case_controller.create(text, label)
+        if not case:
+            return f"Label {label} does not exist", 400
+
+        id, text, label, created_at = case
+        return {"id": id, "text": text, "label": label, "created_at": created_at}
 
 
 if __name__ == "__main__":
