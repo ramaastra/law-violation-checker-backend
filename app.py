@@ -19,7 +19,7 @@ def init():
         return "Database initialization error"
 
 
-@app.route("/train-model", methods=["POST"])
+@app.route("/model/train", methods=["POST"])
 def train():
     if request.method == "POST":
         try:
