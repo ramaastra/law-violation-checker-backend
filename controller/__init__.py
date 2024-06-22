@@ -27,3 +27,16 @@ class label:
         conn.close()
 
         return detail
+
+
+class case:
+    def get_all():
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM cases")
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        labels = format_tuples(("id", "text", "label", "created_at"), data)
+        return labels

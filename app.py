@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, request
 from db import init_db
+from model import train_knn
 from controller import label as label_controller
 
 app = Flask(__name__)
@@ -16,6 +17,16 @@ def init():
         return "Database initialized successfully"
     else:
         return "Database initialization error"
+
+
+@app.route("/train-model", methods=["POST"])
+def train():
+    if request.method == "POST":
+        try:
+            train_knn()
+            return "KNN model created successfully"
+        except:
+            return "Model training failed"
 
 
 @app.route("/labels")
