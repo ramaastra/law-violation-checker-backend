@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
-from db import get_connection
+from controller import label as label_controller
 
 
 def preprocess_data(text):
@@ -63,17 +63,6 @@ def train_knn(data):
     print("> Vectorizer saved in model/trained_models/vectorizer.pkl")
 
 
-def get_label_detail(label):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT title, description FROM labels WHERE id=%s;", [label])
-    label_detail = cursor.fetchone()
-    cursor.close()
-    conn.close()
-
-    return label_detail
-
-
 def predict_case(text):
     model = joblib.load("./model/trained_models/knn.pkl")
     vectorizer = joblib.load("./model/trained_models/vectorizer.pkl")
@@ -83,7 +72,7 @@ def predict_case(text):
     pred = model.predict_proba(x)[0]
     y_index = np.argmax(pred)
 
-    label, description = get_label_detail(y_index.item() + 1)
+    label, description = label_controller.get_detail(y_index.item() + 1)
     probability = pred[y_index] * 100
 
     return (label, description, probability)
