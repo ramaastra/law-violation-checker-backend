@@ -2,16 +2,20 @@ from dotenv import dotenv_values
 import pandas as pd
 import psycopg2
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="expert_system_fp",
-    user=dotenv_values()["DB_USERNAME"],
-    password=dotenv_values()["DB_PASSWORD"],
-)
+
+def get_connection():
+    conn = psycopg2.connect(
+        host="localhost",
+        database="expert_system_fp",
+        user=dotenv_values()["DB_USERNAME"],
+        password=dotenv_values()["DB_PASSWORD"],
+    )
+    return conn
 
 
 def init_db():
     try:
+        conn = get_connection()
         cursor = conn.cursor()
 
         cases_seed = pd.read_csv("./db/seeds/cases.csv")
