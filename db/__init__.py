@@ -1,16 +1,35 @@
 from dotenv import dotenv_values
+from urllib.parse import urlparse
 import pandas as pd
 import psycopg2
 
 
 def get_connection():
-    conn = psycopg2.connect(
-        host="localhost",
-        database="expert_system_fp",
-        user=dotenv_values()["DB_USERNAME"],
-        password=dotenv_values()["DB_PASSWORD"],
-    )
-    return conn
+    if dotenv_values()["DATABASE_URL"]:
+        db_uri = urlparse(dotenv_values()["DATABASE_URL"])
+        username = db_uri.username
+        password = db_uri.password
+        database = db_uri.path[1:]
+        hostname = db_uri.hostname
+        port = db_uri.port
+
+        conn = psycopg2.connect(
+            host=hostname,
+            database=database,
+            user=username,
+            password=password,
+            port=port,
+        )
+        return conn
+
+    else:
+        conn = psycopg2.connect(
+            host="localhost",
+            database="expert_system_fp",
+            user=dotenv_values()["DB_USERNAME"],
+            password=dotenv_values()["DB_PASSWORD"],
+        )
+        return conn
 
 
 def init_db():
