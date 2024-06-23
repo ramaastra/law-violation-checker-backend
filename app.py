@@ -22,14 +22,13 @@ def init():
         return "Database initialization error"
 
 
-@app.route("/model/train", methods=["POST"])
+@app.route("/model/train")
 def train():
-    if request.method == "POST":
-        try:
-            train_knn()
-            return "KNN model created successfully"
-        except:
-            return "Model training failed"
+    try:
+        train_knn()
+        return "KNN model created successfully"
+    except:
+        return "Model training failed"
 
 
 @app.route("/model/predict", methods=["POST"])
