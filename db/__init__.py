@@ -1,12 +1,13 @@
-from dotenv import dotenv_values
+import os
 from urllib.parse import urlparse
 import pandas as pd
 import psycopg2
 
 
 def get_connection():
-    if dotenv_values()["DATABASE_URL"]:
-        db_uri = urlparse(dotenv_values()["DATABASE_URL"])
+    database_url = os.environ.get("DATABASE_URL")
+    if database_url:
+        db_uri = urlparse(database_url)
         username = db_uri.username
         password = db_uri.password
         database = db_uri.path[1:]
@@ -23,11 +24,13 @@ def get_connection():
         return conn
 
     else:
+        db_username = os.environ.get("DB_USERNAME")
+        db_password = os.environ.get("DB_PASSWORD")
         conn = psycopg2.connect(
             host="localhost",
             database="expert_system_fp",
-            user=dotenv_values()["DB_USERNAME"],
-            password=dotenv_values()["DB_PASSWORD"],
+            user=db_username,
+            password=db_password,
         )
         return conn
 
