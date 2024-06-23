@@ -45,16 +45,44 @@ class label:
 
 
 class case:
-    def get_all():
+    def get_all(request, page, items_per_page):
+        page = int(page)
+        items_per_page = int(items_per_page)
+
+        if not page:
+            page = 1
+        if not items_per_page:
+            items_per_page = 10
+
+        next_url = None
+        prev_url = None
+        offset = (page - 1) * items_per_page
+
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM cases")
+
+        cursor.execute("SELECT COUNT(id) FROM cases;")
+        count = cursor.fetchone()[0]
+        print(count)
+
+        cursor.execute(
+            "SELECT * FROM cases LIMIT %s OFFSET %s", [items_per_page, offset]
+        )
         data = cursor.fetchall()
+
         cursor.close()
         conn.close()
 
         labels = format_tuples(("id", "text", "label", "created_at"), data)
-        return labels
+        if count - page * items_per_page > 0:
+            next_url = f"{request.base_url}?page={page+1}&limit={items_per_page}"
+        if page - 1 > 0:
+            prev_url = f"{request.base_url}?page={page-1}&limit={items_per_page}"
+
+        return {
+            "labels": labels,
+            "pagination": {"next": next_url, "prev": prev_url, "total": count},
+        }
 
     def create(text, label):
         conn = get_connection()

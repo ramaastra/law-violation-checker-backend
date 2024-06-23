@@ -71,7 +71,9 @@ def handle_request():
 @app.route("/cases", methods=["GET", "POST"])
 def handle_cases_request():
     if request.method == "GET":
-        cases = case_controller.get_all()
+        page = request.args.get("page")
+        items_per_page = request.args.get("limit")
+        cases = case_controller.get_all(request, page, items_per_page)
         return cases
     elif request.method == "POST":
         request_body = request.get_json()
