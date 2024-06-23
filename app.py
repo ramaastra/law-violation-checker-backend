@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request
 from flask_cors import CORS
 from db import init_db
 from model import train_knn, predict_case
