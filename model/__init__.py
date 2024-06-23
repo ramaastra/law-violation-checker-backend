@@ -43,14 +43,14 @@ def train_knn():
 
     for k in k_values:
         print(f"  > Searching best value of k (current k={k})...")
-        knn = KNeighborsClassifier(n_neighbors=k, metric="euclidean")
+        knn = KNeighborsClassifier(n_neighbors=k, metric="cosine")
         score = cross_val_score(knn, X, y, cv=3)
         scores.append(np.mean(score))
 
     best_index = np.argmax(scores)
     best_k = k_values[best_index]
 
-    knn = KNeighborsClassifier(n_neighbors=best_k, metric="euclidean")
+    knn = KNeighborsClassifier(n_neighbors=best_k, metric="cosine")
     knn.fit(X_train, y_train)
 
     print(f"\n> KNN model created with k={best_k}.")
