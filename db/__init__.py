@@ -37,12 +37,14 @@ def init_db():
             "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);"
         )
 
+        print("> Creating seed data for labels...")
         for _, row in labels_seed.iterrows():
             cursor.execute(
                 "INSERT INTO labels (title, description)" "VALUES (%s, %s)",
                 (row["title"], row["description"]),
             )
 
+        print("> Creating seed data for cases...")
         for _, row in cases_seed.iterrows():
             cursor.execute(
                 "INSERT INTO cases (text, label)" "VALUES (%s, %s)",
